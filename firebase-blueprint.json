@@ -1,0 +1,167 @@
+{
+  "entities": {
+    "Review": {
+      "title": "Review",
+      "description": "User review or feedback submission for Academic AI Toolkit",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Full name of the reviewer"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Email address of reviewer (private)"
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Academic role or position"
+        },
+        "institution": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "University or institution"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Star rating from 1 to 5"
+        },
+        "comment": {
+          "type": "string",
+          "maxLength": 1500,
+          "description": "User feedback content"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ],
+          "description": "Moderation status"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Verified purchaser badge flag"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Submission timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        },
+        "adminNote": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Private note from admin moderator"
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "rating",
+        "comment",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Dynamic pricing and checkout settings for product",
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Unique product identifier"
+        },
+        "productName": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Display name of product"
+        },
+        "price": {
+          "type": "number",
+          "description": "Numeric price value"
+        },
+        "currency": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Currency code e.g. USD"
+        },
+        "displayPrice": {
+          "type": "string",
+          "maxLength": 20,
+          "description": "Formatted price e.g. $49"
+        },
+        "gumroadCheckoutUrl": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Gumroad checkout URL"
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Active state flag"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last price update timestamp"
+        }
+      },
+      "required": [
+        "productName",
+        "price",
+        "currency",
+        "displayPrice",
+        "gumroadCheckoutUrl",
+        "isActive",
+        "updatedAt"
+      ]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrator record",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Admin email address"
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Admin role description"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Created timestamp"
+        }
+      },
+      "required": [
+        "email",
+        "role"
+      ]
+    }
+  },
+  "firestore": {
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Collection of user reviews and feedback submissions"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of product pricing records"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Collection of admin role records"
+    }
+  }
+}

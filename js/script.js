@@ -7,8 +7,7 @@
    ██████████████████████████████████████████████████████████████████████
 
    GUMROAD_CHECKOUT_URL
-     Replace "#GUMROAD_CHECKOUT_URL" with your real Gumroad product/checkout
-     URL (e.g. "https://yourname.gumroad.com/l/your-product").
+     The official Gumroad product page URL for the Academic AI Toolkit.
      Every purchase button on every page (elements with the attribute
      data-purchase) reads this one value.
 
@@ -19,21 +18,11 @@
      Intentionally left EMPTY. Anything placed in a front-end file is public,
      and this link opens the full prompt library. No public page uses it.
      See OWNER-NOTES.md before filling this in.
-
-   TAWKTO_PROPERTY_ID / TAWKTO_WIDGET_ID
-     Leave both empty to keep live chat off. To turn it on, create your
-     account at tawk.to, open Administration > Channels > Chat Widget, and
-     copy the two IDs from the embed snippet it gives you
-     (".../<PROPERTY_ID>/<WIDGET_ID>"). Paste them below — every "Live Chat"
-     button on the site (footer, Need Help section) will then open your
-     Tawk.to widget automatically. No other code needs to change.
    ========================================================================== */
 const SITE_CONFIG = Object.freeze({
-  GUMROAD_CHECKOUT_URL: "#GUMROAD_CHECKOUT_URL",
+  GUMROAD_CHECKOUT_URL: "https://academicaitoolkit.gumroad.com/l/academic-ai-toolkit",
   SUPPORT_EMAIL: "support@academicaitoolkit.com",
-  GOOGLE_SHEETS_URL: "",
-  TAWKTO_PROPERTY_ID: "",
-  TAWKTO_WIDGET_ID: "default"
+  GOOGLE_SHEETS_URL: ""
 });
 
 /* ==========================================================================
@@ -56,10 +45,47 @@ const SITE_CONFIG = Object.freeze({
     console.warn("[Academic AI Toolkit] GUMROAD_CHECKOUT_URL is still a placeholder. Set it in js/script.js.");
   }
 
-  /* --- Support email ------------------------------------------------------ */
+  /* --- Support email & copy ----------------------------------------------- */
   document.querySelectorAll("[data-support-email]").forEach(function (el) {
     el.setAttribute("href", "mailto:" + SITE_CONFIG.SUPPORT_EMAIL);
     if (!el.hasAttribute("data-keep-text")) el.textContent = SITE_CONFIG.SUPPORT_EMAIL;
+  });
+
+  document.querySelectorAll("[data-copy-email]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var email = SITE_CONFIG.SUPPORT_EMAIL || "support@academicaitoolkit.com";
+      var onCopied = function () {
+        var tip = btn.querySelector(".support-copy-tooltip");
+        if (tip) tip.textContent = "Copied!";
+        btn.classList.add("is-copied");
+        setTimeout(function () {
+          if (tip) tip.textContent = "Copy";
+          btn.classList.remove("is-copied");
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(onCopied).catch(function () {
+          var ta = document.createElement("textarea");
+          ta.value = email;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); onCopied(); } catch (err) {}
+          document.body.removeChild(ta);
+        });
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = email;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); onCopied(); } catch (err) {}
+        document.body.removeChild(ta);
+      }
+    });
   });
 
   /* --- Mobile navigation -------------------------------------------------- */
@@ -86,34 +112,6 @@ const SITE_CONFIG = Object.freeze({
       if (mq.matches) setOpen(false);
     });
   }
-
-  /* --- Live chat (Tawk.to) ------------------------------------------------
-     Loads the Tawk.to widget only when TAWKTO_PROPERTY_ID is filled in.
-     Every element with data-live-chat opens/focuses the chat window; until
-     the widget is configured, those buttons quietly do nothing instead of
-     throwing an error. ------------------------------------------------- */
-  var chatButtons = document.querySelectorAll("[data-live-chat]");
-  if (SITE_CONFIG.TAWKTO_PROPERTY_ID) {
-    var s1 = document.createElement("script");
-    s1.async = true;
-    s1.src = "https://embed.tawk.to/" + SITE_CONFIG.TAWKTO_PROPERTY_ID + "/" + SITE_CONFIG.TAWKTO_WIDGET_ID;
-    s1.charset = "UTF-8";
-    s1.setAttribute("crossorigin", "*");
-    document.body.appendChild(s1);
-  } else {
-    chatButtons.forEach(function (el) { el.setAttribute("data-chat-pending", "true"); });
-    if (chatButtons.length && window.console) {
-      console.warn("[Academic AI Toolkit] Live chat buttons are live but TAWKTO_PROPERTY_ID is not set yet — set it in js/script.js.");
-    }
-  }
-  chatButtons.forEach(function (el) {
-    el.addEventListener("click", function (e) {
-      e.preventDefault();
-      if (window.Tawk_API && typeof window.Tawk_API.toggle === "function") {
-        window.Tawk_API.toggle();
-      }
-    });
-  });
 
   /* --- Header: soft shadow once the page has scrolled -------------------- */
   var header = document.querySelector(".site-header");
