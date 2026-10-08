@@ -1,8 +1,0 @@
-{
-  "name": "Academic AI Toolkit",
-  "description": "Academic AI Toolkit provides 2,360 ready-to-use AI prompts, workflows, templates and discipline-specific resources for higher education.",
-  "permissions": [],
-  "capabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
